@@ -7,12 +7,14 @@
 
 import UIKit
 
-final class SettingsViewController: UIViewController {
+ class SettingsViewController: UIViewController {
 
-    var chatList : UIViewController
+    static var settings = SettingsViewController()
 
     
     // MARK: Build subviews
+    
+    // generic picture for homeview
     fileprivate let imageView: UIImageView = {
         let iv = UIImageView()
         iv.translatesAutoresizingMaskIntoConstraints = false
@@ -21,6 +23,7 @@ final class SettingsViewController: UIViewController {
         return iv
     }()
     
+    // presents users name
     fileprivate let label:  UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -29,6 +32,7 @@ final class SettingsViewController: UIViewController {
         return label
     }()
     
+    // exit button
     fileprivate let button : UIButton = {
        let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -42,14 +46,34 @@ final class SettingsViewController: UIViewController {
         
         let vc = UINavigationController(rootViewController: HomeViewController())
         vc.modalPresentationStyle = .fullScreen
-        ChatManager.shared.userSignOut()
+        // ChatManager.shared.userSignOut()
         present(vc, animated: true)
     }
     
-    fileprivate func addConstriants() {
-        imageView.widthAnchor.constraint(equalToConstant: 100)
-        imageView.heightAnchor.constraint(equalToConstant: 100)
-        imageView.topAnchor.constraint(equalTo: )
+    fileprivate func addConstriants() {[
+        
+        // imageView : center and top
+        imageView.widthAnchor.constraint(equalToConstant: 100),
+        imageView.heightAnchor.constraint(equalToConstant: 80),
+        imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+        imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+        
+        // label is attahed to imageViews bottom anchor
+        label.leftAnchor.constraint(equalTo: view.leftAnchor),
+        label.rightAnchor.constraint(equalTo:  view.rightAnchor),
+        label.heightAnchor.constraint(equalToConstant: 80),
+        label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
+        
+        
+        // button is attached to labels bottom anchor
+        button.leftAnchor.constraint(equalTo: view.leftAnchor),
+        button.rightAnchor.constraint(equalTo:  view.rightAnchor),
+        button.heightAnchor.constraint(equalToConstant: 50),
+        button.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 50)
+        
+        
+        ]
+        
     }
     //.. fin
     
@@ -60,10 +84,10 @@ final class SettingsViewController: UIViewController {
 //        print("")
 //    }
     
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "tweakz"

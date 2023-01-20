@@ -12,11 +12,11 @@ import Foundation
 class HomeViewController: UIViewController {
     
     // MARK: Classes / Debugloggers
-      var timer = AppTimer()
-      let dispatchGroup = DispatchGroup()
-      static var VC = HomeViewController()
+    var timer = AppTimer()
+    let dispatchGroup = DispatchGroup()
+    static var VC = HomeViewController()
     
-
+    
     // MARK: Start View
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,11 +26,14 @@ class HomeViewController: UIViewController {
         timer.setupTimer()
         createLogFile()
         NSLog("[LOGGING--> <START> [HOME VC]")
-    
+        
+        
         // MARK: Initial View
         view.backgroundColor = .lightGray
         view.addSubview(userNameField)
         view.addSubview(button)
+        
+        button.addTarget(self, action: #selector(didTapContinue), for: .touchUpInside)
         addConstraint()
         
     }
@@ -42,10 +45,13 @@ class HomeViewController: UIViewController {
         
         // checks the api for current login, if current login show the chatlist
         if ChatManager.shared.isSignedIn {
-            showChatList(animated: true)
+            print("[!] User Currently Signed in! ")
+            showChatList(animated: false)
+        } else {
+            print("[-] Users not signed in. ")
         }
     }
-
+    
     // MARK: UserName Field + Constraints
     private let userNameField: UITextField = {
         
@@ -60,7 +66,7 @@ class HomeViewController: UIViewController {
         
         field.translatesAutoresizingMaskIntoConstraints = false
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 50))
-
+        
         return field
     }()
     
@@ -96,20 +102,24 @@ class HomeViewController: UIViewController {
     }
     
     // MARK: View- Present Chat list (after continue btn pressed)
-    // the function will granb the cannel list from the ChatManager
-    // it will call the function for the tab vc
+    // the function will granb the channelVC from the ChatManager/API
+    // It passes the 'compose' icon (top right)
     
     func showChatList(animated: Bool = true){
         
         print("[!] opening chat list")
-        guard let vc = ChatManager.shared.createChannelList() else {
+        guard let vc = ChatManager.shared.createChannelList() else { // pulls channel-list from API
             print("\(VCError.channelListVC.errorDescription)")
             return
         }
-        let tabVC = TabBarViewController(chatList: vc) 
+        vc.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose,   // creates 'compose' icone for new view (top right)
+                                                               target: self,
+                                                               action: #selector(didTapCompose))
+        
+        let tabVC = TabBarViewController(chatList: vc)
         tabVC.modalPresentationStyle = .fullScreen
         present(tabVC, animated: animated)
-        }
+    }
     
     
     // MARK: Denit first responder
@@ -126,6 +136,27 @@ class HomeViewController: UIViewController {
         
         print("[!] LOGIN SUCCESS [!] ")
         DispatchQueue.main.async { self.showChatList() }
+    }
+    
+    
+    
+    
+    @objc private func didTapCompose() {
+        let alert = UIAlertController(title: "new convo ",
+                                      message: "room name ",
+                                      preferredStyle: .alert
+        )
+        alert.addTextField()
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        alert.addAction(.init(title: "Create", style: .default, handler: { _ in
+            guard let text = alert.textFields?.first?.text, !text.isEmpty else {
+                return
+            }
+            DispatchQueue.main.async {
+                ChatManager.shared.createNewChannel(name: text)
+            }
+        }))
+        presentedViewController?.present(alert, animated: true)
     }
 }
 

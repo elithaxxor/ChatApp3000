@@ -20,26 +20,26 @@ final class ChatManager {
     private var baseURL: Any? { return client.config.baseURL}
     
     
-
+    
     // MARK: API SETUP
     public let APIkeys = [
         "you": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoieW91In0.DRCr7JkI486XvALSVGTx0r76xJXGLJ88kQ0SMNcPxJ8",
         "me": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoibWUifQ.orBOu9HsVfGDs_2d5Y1yoIhjaE2JLUxCEPvqAg_-xrQ"
     ]
     
-   public func APISetUp() {
-        let client = ChatClient(config: .init(apiKey: .init("rhde4ntthd8m")))
+    public func APISetUp() {
+        let client = ChatClient(config: .init(apiKey: .init("393gh67jgafprkuhzyzc6wr8q3vzhveft3dw8s73us9xyq6z9z5g9cczk62f289z")))
         self.client = client
     }
     //** fin
     
     
- 
+    
     // MARK: API Functionallity
     
     public func userSignIn(with userName : String, completion: @escaping (Bool) -> Void ) {
         print("[+] Start, client logging in..")
-        print("[!] STATS: Client \(String(describing: currentUser)) STATUS: [\(String(describing: connectionStatus))] \(String(describing: baseURL))")
+        print("[!] STATS: [USER] \(String(describing: currentUser)) [STATUS]: [\(String(describing: connectionStatus)) \(String(describing: baseURL))")
         
         // TODO: ADD ALERT TO SCREEN
         guard !userName.isEmpty else {
@@ -50,16 +50,21 @@ final class ChatManager {
         guard let token = APIkeys[userName.lowercased()] else {
             completion(false)
             print(APIError.tokenError)
+            print(ErrorPayload.self)
             return
         }
+        
+        print("[!] Token to be used \(token)")
         // uses ^^ userName && token to connect API
-        client.connectUser(userInfo: UserInfo(id: userName, name: userName), 
+        client.connectUser(userInfo: UserInfo(id: userName,
+                                              name: userName),
                            token: Token(stringLiteral: token))
         // closure,if error is nill then close out.
         { error in
             completion(error == nil)
         }
-
+        print("[!] Error.. ")
+        
     }
     
     
@@ -74,13 +79,13 @@ final class ChatManager {
         return (client.currentUserId != nil)
         
     }
-
+    
     
     // The ChannelVC  will populate a list of channels with same ID (array)
     public func createChannelList() -> UIViewController? {
         guard let id = currentUser else { return nil }
         let list = client.channelListController(query: .init(filter: .containMembers(userIds: [id])))
-         
+        
         let vc = ChatChannelListVC()
         vc.content = list
         list.synchronize() // api for live updates
@@ -89,7 +94,21 @@ final class ChatManager {
     
     
     public func createNewChannel(name: String ) {
-        
+        guard let user = currentUser else { return }
+        let keys = APIkeys.keys.filter({ $0 != user })
+        print("[!] current key \(keys) current user \(user)")
+        do {
+            let result = try client.channelController (
+                createChannelWithId: .init(type: .messaging, id: name),
+                name: name,
+                members: [],
+                isCurrentUserMember: true
+                
+            )
+            result.synchronize()
+        } catch {
+            print("[-] Create new channel error..    \(error)")
+        }
     }
 }
 //** Fin
