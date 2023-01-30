@@ -4,6 +4,7 @@ import UIKit
 import StreamChat
 import StreamChatUI
 
+
 // appidL (production) 1230208
 // appid (development) 1230209
 // pub rhde4ntthd8m

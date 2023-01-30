@@ -7,14 +7,25 @@
 
 import UIKit
 import Foundation
-
+import MapKit
 import LocalAuthentication
 import LocalAuthenticationEmbeddedUI
-
+import CoreLocation
+import CoreLocationUI
 
 
 
 class HomeViewController: UIViewController {
+    
+    
+    
+    // MARK: MAP SETUP
+    weak var statusLabel : UILabel!
+    weak var latitudeLabel : UILabel!
+    weak var longitudeLabel : UILabel!
+    weak var addressLabel : UILabel!
+    
+    fileprivate var LM = LocationDataManager()
     
     // MARK: Classes / Debugloggers
     var timer = AppTimer()
@@ -26,26 +37,19 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         print("yet another chat app \(\Intro.banner)")
-        
+        NSLog("[LOGGING--> <START> [HOME VC]")
+
         // MARK: Loggers / Timer Setup
         timer.setupTimer()
         createLogFile()
-        NSLog("[LOGGING--> <START> [HOME VC]")
-        
         
         // MARK: Initial View
-        view.backgroundColor = .lightGray
-        view.addSubview(userNameField)
-        view.addSubview(button)
-        
-        button.addTarget(self, action: #selector(didTapContinue), for: .touchUpInside)
-        
-         userNameField.addTarget(self, action: #selector(didTextfield), for: .allEditingEvents) // FIXME: May have to change this to textview
-        
-        
+        initButtons()
+        addSubViews()
         addConstraint()
         
     }
+    
     
     // MARK: INIT First Responder
     override func viewDidAppear(_ animated: Bool) {
@@ -62,8 +66,12 @@ class HomeViewController: UIViewController {
     }
     
     
+
     
     // MARK: Constriants -- button / usernamefield
+    // TODO: ADD LOCATION BUTTON
+    //weak var findLocationButton : UIButton!
+
     private func addConstraint() {
         
         NSLayoutConstraint.activate([
@@ -77,16 +85,17 @@ class HomeViewController: UIViewController {
             button.topAnchor.constraint(equalTo: userNameField.bottomAnchor, constant: 20),
             button.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 50),
             button.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -50),
-            button.heightAnchor.constraint(equalToConstant: 50)
+            button.heightAnchor.constraint(equalToConstant: 50),
             
+            locationButton.topAnchor.constraint(equalTo:  button.bottomAnchor, constant: 40),
+            locationButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 50),
+            locationButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -50),
+            locationButton.heightAnchor.constraint(equalToConstant: 50)
+
         ])
     }
     
-    
-    
-    
-    
-    
+
     // MARK: View- Present Chat list (after continue btn pressed)
     // the function will granb the channelVC from the ChatManager/API
     // It passes the 'compose' icon (top right)
@@ -111,13 +120,30 @@ class HomeViewController: UIViewController {
     
     
     // MARK: START OF BUTTON / TEXTFIELD FUNCTIONALITY (obj-c)
+
     
+    let locationButton: CLLocationButton = {
+        let lb = CLLocationButton()
+        
+        lb.translatesAutoresizingMaskIntoConstraints = false
+        lb.addSubview(UIView(frame: .init(x: 0, y: 0, width: 10, height: 40)))
+        //lb.sizeToFit()
+        
+        
+        
+   //     locationButton.label = .currentLocation
+//        locationButton.cornerRadius = 25.0
+//
+        return lb
+    }()
     
     // MARK: UserName Field + Constraints
     let userNameField: UITextField = {
         
         let field = UITextField()
-        
+        field.translatesAutoresizingMaskIntoConstraints = false
+
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 50))
         field.placeholder = "username "
         field.backgroundColor = .darkGray
         field.textColor = .white
@@ -125,14 +151,12 @@ class HomeViewController: UIViewController {
         field.autocorrectionType = .no
         field.leftViewMode = .always
         
-        field.translatesAutoresizingMaskIntoConstraints = false
-        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 50))
         
         return field
     }()
     
     // MARK: UIButton
-    private let button : UIButton = {
+    internal let button : UIButton = {
         
         let button = UIButton()
         
@@ -148,6 +172,11 @@ class HomeViewController: UIViewController {
         return button
     }()
     
-    
 }
 
+
+
+extension HomeViewController {
+
+
+}

@@ -2,8 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSMotionUsageDescription</key>
+	<string>motion </string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>location usage</string>
+	<key>NSLocationUsageDescription</key>
+	<string>locaiton usage 2</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>locaiton always usage</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>locaiton always and when in use </string>
+	<key>NSIdentityUsageDescription</key>
+	<string>identity </string>
 	<key>NSFileProviderDomainUsageDescription</key>
-	<string></string>
+	<string>file access</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>face id permission</string>
 	<key>UIApplicationSceneManifest</key>
