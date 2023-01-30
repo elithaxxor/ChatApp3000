@@ -35,7 +35,6 @@ extension VCError {
 
 
 
-
 public enum APIError : Error {
     case tokenError
     case userNameError
