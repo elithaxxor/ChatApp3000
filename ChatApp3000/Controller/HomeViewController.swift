@@ -12,20 +12,47 @@ import LocalAuthentication
 import LocalAuthenticationEmbeddedUI
 import CoreLocation
 import CoreLocationUI
+import _CoreLocationUI_SwiftUI
 
 
 
 class HomeViewController: UIViewController {
-    
-    
-    
+//
+//    var chatList : UIViewController
+//
+//    let footer = TabBarViewController(chatList: chatList)
+//
     // MARK: MAP SETUP
     weak var statusLabel : UILabel!
     weak var latitudeLabel : UILabel!
     weak var longitudeLabel : UILabel!
     weak var addressLabel : UILabel!
     
-    fileprivate var LM = LocationDataManager()
+    
+    var latitude : CLLocationDegrees?
+    var longitude : CLLocationDegrees?
+    
+    let mapConfig = MKStandardMapConfiguration()
+    var label: CLLocationButtonLabel?
+    func configMap() {
+        mapConfig.showsTraffic = true
+        mapConfig.emphasisStyle = .default
+        mapConfig.elevationStyle = .flat
+        mapConfig.pointOfInterestFilter = .includingAll
+        
+    }
+
+    
+    let mapView : MKMapView = {
+        let map = MKMapView()
+        print("[!] Creating mapview.. ")
+        map.overrideUserInterfaceStyle = .dark
+        map.addSubview(UIView(frame: CGRect(x: 100, y: 100, width: 100, height: 100)))
+        return map
+    }()
+    
+    
+    //fileprivate var LM = LocationDataManager()
     
     // MARK: Classes / Debugloggers
     var timer = AppTimer()
@@ -39,14 +66,19 @@ class HomeViewController: UIViewController {
         print("yet another chat app \(\Intro.banner)")
         NSLog("[LOGGING--> <START> [HOME VC]")
 
+        //mapView.delegate = self // TODO: MAY HAVE TO CHANGE
+        
         // MARK: Loggers / Timer Setup
         timer.setupTimer()
         createLogFile()
         
         // MARK: Initial View
+        
+        configMap()
         initButtons()
         addSubViews()
         addConstraint()
+        
         
     }
     
@@ -90,8 +122,13 @@ class HomeViewController: UIViewController {
             locationButton.topAnchor.constraint(equalTo:  button.bottomAnchor, constant: 40),
             locationButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 50),
             locationButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -50),
-            locationButton.heightAnchor.constraint(equalToConstant: 50)
+            locationButton.heightAnchor.constraint(equalToConstant: 50),
 
+            mapView.topAnchor.constraint(equalTo: locationButton.bottomAnchor, constant: 50),
+            mapView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 50),
+            mapView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -50),
+            mapView.heightAnchor.constraint(equalToConstant: 50)
+            
         ])
     }
     
@@ -115,8 +152,7 @@ class HomeViewController: UIViewController {
         tabVC.modalPresentationStyle = .fullScreen
         present(tabVC, animated: animated)
     }
-    
-    
+
     
     
     // MARK: START OF BUTTON / TEXTFIELD FUNCTIONALITY (obj-c)
@@ -125,13 +161,14 @@ class HomeViewController: UIViewController {
     let locationButton: CLLocationButton = {
         let lb = CLLocationButton()
         
+        
+        lb.cornerRadius = 30
         lb.translatesAutoresizingMaskIntoConstraints = false
         lb.addSubview(UIView(frame: .init(x: 0, y: 0, width: 10, height: 40)))
-        //lb.sizeToFit()
+        
+        lb.sizeToFit()
         
         
-        
-   //     locationButton.label = .currentLocation
 //        locationButton.cornerRadius = 25.0
 //
         return lb

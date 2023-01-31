@@ -5,6 +5,7 @@
 //  Created by Adel Al-Aali on 1/19/23.
 //
 
+// NOTE: Segues to this VC after user logs in 
 import UIKit
 
 class TabBarViewController: UITabBarController {
