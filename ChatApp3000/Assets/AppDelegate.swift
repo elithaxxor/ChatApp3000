@@ -6,14 +6,21 @@
 //
 
 import UIKit
+import CoreData
+import GoogleMaps
+import GooglePlaces
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        GMServices.provideAPIKey("")
+        GMPlacesClient.provideAPIKey("")
         // MARK: Setsup API Client/Session
-        ChatManager.shared.APISetUp()
+        self.ChatManager.shared.APISetUp()
         return true
     }
 

@@ -196,6 +196,7 @@
 			mainGroup = 650B26B8297A2C33007F448A;
 			packageReferences = (
 				651DCEAB297A37480043267D /* XCRemoteSwiftPackageReference "stream-chat-swift" */,
+				65C2A5C929898C9300341D23 /* XCRemoteSwiftPackageReference "google-maps-ios-utils" */,
 			);
 			productRefGroup = 650B26C2297A2C33007F448A /* Products */;
 			projectDirPath = "";
@@ -469,6 +470,14 @@
 			requirement = {
 				branch = develop;
 				kind = branch;
+			};
+		};
+		65C2A5C929898C9300341D23 /* XCRemoteSwiftPackageReference "google-maps-ios-utils" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/google-maps-ios-utils";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

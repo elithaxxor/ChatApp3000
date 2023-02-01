@@ -17,6 +17,46 @@ import _CoreLocationUI_SwiftUI
 
 
 class HomeViewController: UIViewController {
+    
+    // sets userdefaults to swtich from darkmode and light
+    let styleSegmentedControl = UISegmentedControl()
+    let defaults = UserDefaults.standard
+    var isDarkMode = false
+    struct keys {
+        static let darkMode = "preferDarkMode"
+        static let defaultUser = "me"
+        static let loggedDirections : [MKDirections] = []
+    }
+    func setUserDefault() {
+        defaults.set(isDarkMode, forKey: Keys.darkMode)
+        defaults.set(defaultUser, forKey: Keys.defaultUser)
+        defaults.set(loggedDirections, forKey: Keys.loggedDirections)
+    }
+    
+    // [retrieves data] checks user defualts, switches if bool
+    func checkUserDefault() {
+        let darkMode = defaults.bool(forKey: keys.darkMode)
+        if isDarkMode {
+            isDarkMode = true
+            styleSegmentedControl.selectedSegmentIndex = 1
+        }
+    }
+    
+    
+    
+    // checks if name is set and shows coreesponding value on text field
+    func saveName() {
+        defaults.set(userNameField.text!, forKey: keys.defaultUser)
+    }
+    
+    // sets the user login name
+    func saveUserName() {
+        let userID = defualts.set(nameTextField.text!, forKey: keys.defaultUser)
+        userNameField.text = userId
+    }
+    
+    
+    
 //
 //    var chatList : UIViewController
 //
@@ -43,16 +83,9 @@ class HomeViewController: UIViewController {
     }
 
     
-    let mapView : MKMapView = {
-        let map = MKMapView()
-        print("[!] Creating mapview.. ")
-        map.overrideUserInterfaceStyle = .dark
-        map.addSubview(UIView(frame: CGRect(x: 100, y: 100, width: 100, height: 100)))
-        return map
-    }()
+
     
-    
-    //fileprivate var LM = LocationDataManager()
+    var LM = LocationDataManager()
     
     // MARK: Classes / Debugloggers
     var timer = AppTimer()
@@ -66,6 +99,8 @@ class HomeViewController: UIViewController {
         print("yet another chat app \(\Intro.banner)")
         NSLog("[LOGGING--> <START> [HOME VC]")
 
+        LocationDataManager.getDirections(self)
+        
         //mapView.delegate = self // TODO: MAY HAVE TO CHANGE
         
         // MARK: Loggers / Timer Setup
@@ -74,14 +109,22 @@ class HomeViewController: UIViewController {
         
         // MARK: Initial View
         
-        configMap()
         initButtons()
         addSubViews()
         addConstraint()
         
-        
+        DispatchQueue.main.async {
+            self.configMap()
+        }
     }
     
+//    mapView
+//    The map view that requests the renderer object.
+//
+//    overlay
+//    The overlay object that the map view is about to display.
+//
+
     
     // MARK: INIT First Responder
     override func viewDidAppear(_ animated: Bool) {
